@@ -1,39 +1,26 @@
-name: Deploy to DigitalOcean
+name: Deploy to DigitalOcean (Development)
 
 on:
   push:
     branches:
-      - development
-      - qa
+      - development  # Ensures this runs only when pushing to development
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: 45.55.125.31
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/dev.startupproject.me
+            git pull origin development
+            sudo systemctl restart nginx
 
-    - name: Deploy to server
-      run: |
-        ssh root@45.55.125.31 << 'EOF'
-          cd /var/www/startupproject
-          
-          # Pull the latest changes for the current branch
-          git pull origin ${{ github.ref_name }}
-
-          # Update the environment directories based on the branch
-          if [[ "${{ github.ref_name }}" == "development" ]]; then
-            echo "Deploying to Development Environment"
-            cp -r * /var/www/startupproject/development
-          fi
-          if [[ "${{ github.ref_name }}" == "qa" ]]; then
-            echo "Deploying to QA Environment"
-            cp -r * /var/www/startupproject/qa
-          fi
-        EOF
