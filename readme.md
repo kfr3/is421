@@ -2,9 +2,9 @@
 
 ## Deployments
 
-Development: http://dev.startupproject.me/index.html
-QA: 
-Production: 
+1. Development: http://dev.startupproject.me/index.html
+2. QA: http://qa.startupproject.me/index.html
+3. Production: 
 
 ## Fashion Assistant
 
