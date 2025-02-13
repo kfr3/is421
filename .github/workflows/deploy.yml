@@ -19,7 +19,7 @@ jobs:
           host: ${{ secrets.DO_HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "index.html, about.html"  # Ensure this file exists in your repo
+          source: "index.html, about.html, images/*"  # Ensure this file exists in your repo
           target: "/var/www/dev.startupproject.me/"
 
       - name: Restart Nginx
