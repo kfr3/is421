@@ -1,9 +1,11 @@
-name: Deploy to DigitalOcean (Development)
+name: Deploy to DigitalOcean
 
 on:
   push:
     branches:
-      - development  # Ensures this runs only when pushing to development
+      - development
+      - qa
+      - production
 
 jobs:
   deploy:
@@ -19,8 +21,11 @@ jobs:
           host: ${{ secrets.DO_HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "index.html, about.html, images/*"  # Ensure this file exists in your repo
-          target: "/var/www/dev.startupproject.me/"
+          source: "index.html, about.html, images/*"
+          target: |
+            ${{ github.ref == 'refs/heads/development' && '/var/www/dev.startupproject.me/' ||
+                github.ref == 'refs/heads/qa' && '/var/www/qa.startupproject.me/' ||
+                github.ref == 'refs/heads/production' && '/var/www/production.startupproject.me/' }}
 
       - name: Restart Nginx
         uses: appleboy/ssh-action@v0.1.10
