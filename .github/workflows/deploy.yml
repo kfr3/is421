@@ -13,14 +13,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Deploy via SSH
+      - name: Deploy files via SCP
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "index.html"  # Ensure this file exists in your repo
+          target: "/var/www/dev.startupproject.me/"
+
+      - name: Restart Nginx
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: 45.55.125.31
+          host: ${{ secrets.DO_HOST }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /var/www/dev.startupproject.me
-            git pull origin development
             sudo systemctl restart nginx
 
