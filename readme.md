@@ -7,3 +7,8 @@ This AI project would help the user discover a new clothing style and help them 
 ## Tech Roadmap
 
 Here you will find our tech roadmap.
+1. Outfit Recommendation Algorithm (Most Valuable and Complex)
+2. Clothing Image Upload & Inventory Management
+3. Aesthetic Preferences & Inspiration Image Upload
+4. Database Setup and User Data Management
+5. UI/UX Design & Bootstrap Implementation
