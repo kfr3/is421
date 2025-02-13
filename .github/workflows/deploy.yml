@@ -1,0 +1,38 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches:
+      - development
+      - qa
+      - production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy files via SCP
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "index.html, about.html, images/*"
+          target: |
+            ${{ github.ref == 'refs/heads/development' && '/var/www/dev.startupproject.me/' ||
+                github.ref == 'refs/heads/qa' && '/var/www/qa.startupproject.me/' ||
+                github.ref == 'refs/heads/production' && '/var/www/production.startupproject.me/' }}
+
+      - name: Restart Nginx
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.DO_HOST }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo systemctl restart nginx
+
